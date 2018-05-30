@@ -1,7 +1,7 @@
 #function power-scan( $first_three ){
 
 #Subnet Comparison
-$networks_report = @()
+$report = @()
 #first octet
 $first_three = "131.55.192."
 #last octet
