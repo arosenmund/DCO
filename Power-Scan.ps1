@@ -1,34 +1,53 @@
 #function power-scan( $first_three ){
 
+
+write-verbose "Welcome to power-scan the least creative name th3m3ch4nic could think of, but alas we can't choose our parents."
+
+#First step run according to input, display results in chart.  One off capability.
+#Next step, run off of generated configuration file.  Store data in the collection per network and use change tracking dashboard.
+
+
 #Subnet Comparison
 $report = @()
+get-job|remove-job
 #first octet
-$first_three = "131.55.192."
+$first_three = read-host "Please enter the  frist 3 octets of network to be scanned with a '.' at the end.  
+Like so:  Examples: 192.168.1."
+
+
 #last octet
-$Starting_IP = 43
-$Ending_IP= 254
-$port_TCP = 445
+$Starting_IP = read-host "Enter starting ip (last octet)"
+$Ending_IP= read-host "Enter ending ip (last octet)"
+#Maybe some sort of range of ports option here?
+
 $iprange = $Starting_IP..$Ending_IP
+
+###need to add progress bar###
+
 Foreach( $ip in $iprange){
+$c = $iprange.count
+$o = 1
+write-progress -Activity "Scanning the input range." -Status "Starting job for $ip"  -PercentComplete ($o/$c * 100)
     
     $I = $first_three+[string]$ip
 
-    Try {$name = [System.net.DNS]::GetHostByAddress($I)|select HostName -ErrorAction Continue}catch{write-host "Input null or non resolved"}
+Start-Job -Name "Testing $I" -ArgumentList $I -ScriptBlock {
+    Try {$name = [System.net.DNS]::GetHostByAddress($args[0])|select HostName -ErrorAction Continue}catch{write-host "Input null or non resolved"}
 
     #Try {icmp_response = test-netconnection -port $port_TCP -InformationLevel Quiet -ComputerName $I  -erroraction Continue}catch{write-verbose "blip blop"}
-    Try {$response = test-connection -quiet -Count 1 -ComputerName $I  -erroraction Continue}catch{write-host "ICMP response failed to $I"}
-            if($response -eq $true){$more = test-connection -count 1 -ComputerName $I}
-    Try {$SMB_response = Test-NetConnection -ComputerName $I -CommonTCPPort SMB -InformationLevel Quiet -ErrorAction Continue}catch{write-host "SMB Connection failed to $I"}
-    Try {$RDP_response = Test-NetConnection -ComputerName $I -CommonTCPPort RDP -InformationLevel Quiet -ErrorAction Continue}catch{write-host "RDP Connection failed to $I"}
-    Try {$WINRM_response = Test-NetConnection -ComputerName $I -CommonTCPPort WINRM -InformationLevel Quiet -ErrorAction Continue}catch{write-host "WINRM Connection failed to $I"}    
-    Try {$HTTP_response = Test-NetConnection -ComputerName $I -CommonTCPPort HTTP -InformationLevel Quiet -ErrorAction Continue}catch{write-host "HTTP Connection failed to $I"}
+    Try {$response = test-connection -quiet -Count 1 -ComputerName $args[0]  -erroraction Continue}catch{write-host "ICMP response failed to $args[0]"}
+            if($response -eq $true){$more = test-connection -count 1 -ComputerName $args[0]}
+    Try {$SMB_response = Test-NetConnection -ComputerName $args[0] -CommonTCPPort SMB -InformationLevel Quiet -ErrorAction Continue}catch{write-host "SMB Connection failed to $args[0]"}
+    Try {$RDP_response = Test-NetConnection -ComputerName $args[0] -CommonTCPPort RDP -InformationLevel Quiet -ErrorAction Continue}catch{write-host "RDP Connection failed to $args[0]"}
+    Try {$WINRM_response = Test-NetConnection -ComputerName $args[0] -CommonTCPPort WINRM -InformationLevel Quiet -ErrorAction Continue}catch{write-host "WINRM Connection failed to $args[0]"}    
+    Try {$HTTP_response = Test-NetConnection -ComputerName $args[0] -CommonTCPPort HTTP -InformationLevel Quiet -ErrorAction Continue}catch{write-host "HTTP Connection failed to $args[0]"}
             #if($SMB_response -eq $true -or $RDP_response -eq $true -or $WINRM_respone -eq $true -or $HTTP_response -eq $true){
             #        Port_scan($I)
             #}
 
     $properties = @{
 
-                IP4_Address = $I
+                IP4_Address = $args[0]
                 Computer_Name = $name.HostName
                 Response_Status = $response
                 Time_to_Live = $more.responsetimetolive
@@ -40,13 +59,36 @@ Foreach( $ip in $iprange){
 
                 }
 
-    $obj = new-object -TypeName psobject -Property $properties
-    $report += $obj
+    new-object -TypeName psobject -Property $properties
+    
+    }
 
+
+
+    $memuse = Get-Counter -counter "\memory\% committed bytes in use"
+    $percmem = $memuse.CounterSamples.cookedvalue
+    write-host "Current mem usage is $percmem percent."
+    While($percmem -gt 80){
+
+                            write-host "Mem is too high....throttling for you pleasure."; start-sleep 1
+                            $memuse = Get-Counter -counter "\memory\% committed bytes in use"
+                            $percmem = $memuse.CounterSamples.cookedvalue
+                            write-host "Current mem usage is $percmem percent."
+
+                           }
+$o++
 }
+#####need to wait for all jobs to finish cyclically then recieve them and add them to the report.
+
+$report = get-job |receive-job -Wait -AutoRemoveJob
+
+
+
 
 $report |convertto-html |out-file ~/$first_three.html
 
+
+#########################################Range port scanner^^^^^build into above function^^^^^^#########################
 #####scan one ip for a range of ports
 $IP = "131.55.192.66"
 
@@ -67,7 +109,7 @@ Foreach( $port in $portrange){
 
 
 
-
+####################################Network Detection######################################################################
 
 #what other networks are there?
 $networks_report = @()
