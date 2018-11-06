@@ -7,7 +7,7 @@ $dt = (get-date).DateTime
 $data_store = "C:\site_check\data_store\"
 $baseline_store = "C:\site_check\baselines\"
 $wait = 30
-$site = "floridaelectionwatch.gov"
+$site = ""
 #comment out what you don't need
 
 
