@@ -1,5 +1,9 @@
 # DCO
 
+## Power-SCAN
+
+Scan common ports of every endpoint of a give subnet.  In progress to build out enumberation of adjacent networks by hop for additional enumeration and scanning. ~this is the most defeloped and actively worked on, hence the change in the structure.  I am planning on starting here working toward having this become a continuous monitoring tool that checks for changes in assets and alerts accordingl, and then moving to the others.
+
 ## Domain_File_Search.ps1
 
 Searches through sysvol on your domain for passwords, files, usernames and anything else that may be erroneously stored in a publicly readable space.
@@ -9,9 +13,7 @@ Searches through sysvol on your domain for passwords, files, usernames and anyth
 
 Domain Active directory queries from powershell using native .net libraries only for ldap connections.  No need for the installation fo the ad module by the admin.  Enumeration station.
 
-## Power-SCAN
 
-Scan common ports of every endpoint of a give subnet.  In progress to build out enumberation of adjacent networks by hop for additional enumeration and scanning.
 
 
 ## Site-Check
