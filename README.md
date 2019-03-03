@@ -1,6 +1,6 @@
 # DCO
 
-## Power-SCAN
+## Power-SCAN - located in the scripts folder runs indpendnetly
 
 Scan common ports of every endpoint of a give subnet.  In progress to build out enumberation of adjacent networks by hop for additional enumeration and scanning. ~this is the most defeloped and actively worked on, hence the change in the structure.  I am planning on starting here working toward having this become a continuous monitoring tool that checks for changes in assets and alerts accordingl, and then moving to the others.
 
