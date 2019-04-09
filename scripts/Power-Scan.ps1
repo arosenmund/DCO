@@ -22,7 +22,7 @@
 #>
 
 
-write-verbose "
+write-host "
 ______   ______  _  __ ___________            ______ ____ _____    ____  
 \____ \ /  _ \ \/ \/ // __ \_  __ \  ______  /  ___// ___\\__  \  /    \ 
 |  |_> >  <_> )     /\  ___/|  | \/ /_____/  \___ \\  \___ / __ \|   |  \
@@ -31,7 +31,7 @@ ______   ______  _  __ ___________            ______ ____ _____    ____
 
 "
 
-write-verbose "
+write-host "
 ___.          
 \_ |__ ___.__.
  | __ <   |  |
@@ -41,7 +41,7 @@ ___.
 "
 
 
-write-verbose "
+write-host "
 __  .__              _____                .__                  .__        
 _/  |_|  |__   ____   /     \   ____   ____ |  |__ _____    ____ |__| ____  
 \   __\  |  \_/ __ \ /  \ /  \_/ __ \_/ ___\|  |  \\__  \  /    \|  |/ ___\ 
@@ -50,12 +50,6 @@ _/  |_|  |__   ____   /     \   ____   ____ |  |__ _____    ____ |__| ____
            \/     \/        \/     \/     \/     \/     \/     \/        \/ 
 "
 
-
-write-verbose "
-
-
-
-"
 
 #subnetscan
 function start-subnetscan( $first_three ){
@@ -158,20 +152,13 @@ $report |convertto-html |out-file $current_dir/$first_three.html
 
 #########################################Range port scanner^^^^^build into above function^^^^^^#########################
 #####scan one ip for a range of ports
-function start-endpointscan(){
-$IP = "131.55.192.66"
-
-$Starting_Port = 1
-$Ending_Port= 1024
+function start-endpointscan($ip,$starting_port,$Ending_Port){
 
  
 $portrange = $Starting_Port..$Ending_Port
 
-
-
 Foreach( $port in $portrange){
 
-    $I = $first_three+[string]$ip
     test-netconnection -port $port -InformationLevel Quiet -ComputerName $IP
 
 }
