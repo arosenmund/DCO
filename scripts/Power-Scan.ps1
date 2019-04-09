@@ -154,14 +154,16 @@ $report |convertto-html |out-file $current_dir/$first_three.html
 #####scan one ip for a range of ports
 function start-endpointscan($ip,$starting_port,$Ending_Port){
 
+    $current_dir = get-location
+    $current_dir.path
  
-$portrange = $Starting_Port..$Ending_Port
+    $portrange = $Starting_Port..$Ending_Port
 
-Foreach( $port in $portrange){
+    Foreach( $port in $portrange){
 
-    test-netconnection -port $port -InformationLevel Quiet -ComputerName $IP
-
-}
+       test-netconnection -port $port -InformationLevel Quiet -ComputerName $IP
+      
+    }
 
 
 }
