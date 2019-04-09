@@ -1,4 +1,6 @@
 # DCO
+## All Current Scripts below are located in the SCRIPTS folder.
+*** To use them open and read the instructions in the comments at the top of file. ***
 
 ## Power-SCAN - located in the scripts folder runs indpendnetly
 
