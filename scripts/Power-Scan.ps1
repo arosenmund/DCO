@@ -1,20 +1,63 @@
 ####themechanic
-####all the notes and stuff go here...
 
-#Run this script and then you will be able to sue the following commands:
-# ps-subnet
-# ps-endpoint
-# ps-netdiscover 
-
-
-#####################ps-subnet#######################
 <#
-
-
+.SYNOPSIS
+    This script loads the three following functions for use:
+    start-subnetscan    :scans the specified subnet for endpoints and commonports
+    start-endpointscan  :scans the specified endpoint on the range of ports provided
+    start-networkscan   :scans for the existence of other networks and maps the number of hops
+.DESCRIPTION
+    Currently only start-subnet scan properly works.  When ran it will ask for the first 3 octets of the subnet you would like to scan.
+    This is meant to scan within a class C or smaller.  Follow the first 3 octets with a '.' as instructed.  You will then be prompted
+    for the begining IP of the range (the fourth octet -->title of a sci-fi novel I will write one day) and the ending IP for the range.
+    The scan will then begin. Each IP scanned is ran in separate job while the memory is monitored to ensure it does not exceed safe
+    parameters.  If the memory does exceed the hard coded parameters it will stop spawning jobs until the the memory usage has dropped to
+    a safe range. 
+.NOTES
+    start-endpoint scan will be operational in the next release followed by start-networkscan
+.LINK
+    https://github.com/arosenmund/DCO
+.EXAMPLE
+    powershell powerscan.ps1   <---duh
 #>
 
 
+write-verbose "
+______   ______  _  __ ___________            ______ ____ _____    ____  
+\____ \ /  _ \ \/ \/ // __ \_  __ \  ______  /  ___// ___\\__  \  /    \ 
+|  |_> >  <_> )     /\  ___/|  | \/ /_____/  \___ \\  \___ / __ \|   |  \
+|   __/ \____/ \/\_/  \___  >__|            /____  >\___  >____  /___|  /
+|__|                      \/                     \/     \/     \/     \/ 
 
+"
+
+write-verbose "
+___.          
+\_ |__ ___.__.
+ | __ <   |  |
+ | \_\ \___  |
+ |___  / ____|
+     \/\/   
+"
+
+
+write-verbose "
+__  .__              _____                .__                  .__        
+_/  |_|  |__   ____   /     \   ____   ____ |  |__ _____    ____ |__| ____  
+\   __\  |  \_/ __ \ /  \ /  \_/ __ \_/ ___\|  |  \\__  \  /    \|  |/ ___\ 
+ |  | |   Y  \  ___//    Y    \  ___/\  \___|   Y  \/ __ \|   |  \  \  \___ 
+ |__| |___|  /\___  >____|__  /\___  >\___  >___|  (____  /___|  /__|\___  >
+           \/     \/        \/     \/     \/     \/     \/     \/        \/ 
+"
+
+
+write-verbose "
+
+
+
+"
+
+#subnetscan
 function start-subnetscan( $first_three ){
 
 $current_dir = get-location
