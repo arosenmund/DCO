@@ -1,37 +1,58 @@
-#function power-scan( $first_three ){
+####themechanic
+####all the notes and stuff go here...
 
+#Run this script and then you will be able to sue the following commands:
+# ps-subnet
+# ps-endpoint
+# ps-netdiscover 
+
+
+#####################ps-subnet#######################
+<#
+
+
+#>
+
+
+
+function ps-subnet( $first_three ){
+
+$current_dir = pwd
+$current_dir.path
 
 write-verbose "Welcome to power-scan the least creative name th3m3ch4nic could think of, but alas we can't choose our parents."
 
 #First step run according to input, display results in chart.  One off capability.
 #Next step, run off of generated configuration file.  Store data in the collection per network and use change tracking dashboard.
-
-
 #Subnet Comparison
-$report = @()
-get-job|remove-job
-#first octet
-$first_three = read-host "Please enter the  frist 3 octets of network to be scanned with a '.' at the end.  
-Like so:  Examples: 192.168.1."
+    $report = @() #initialize memory space for the 
+
+    get-job|remove-job #removes jobs from last run
+
+    #first octet
+    $first_three = read-host "Please enter the  frist 3 octets of network to be scanned with a '.' at the end.  
+    Like so:  Examples: 192.168.1."
 
 
-#last octet
-$Starting_IP = read-host "Enter starting ip (last octet)"
-$Ending_IP= read-host "Enter ending ip (last octet)"
-#Maybe some sort of range of ports option here?
+    #last octet
+    $Starting_IP = read-host "Enter starting ip (last octet)"
+    $Ending_IP= read-host "Enter ending ip (last octet)"
 
-$iprange = $Starting_IP..$Ending_IP
+    #Maybe some sort of range of ports option here?
+
+    $iprange = $Starting_IP..$Ending_IP
 
 ###need to add progress bar###
 
 Foreach( $ip in $iprange){
-$c = $iprange.count
-$o = 1
-write-progress -Activity "Scanning the input range." -Status "Starting job for $ip"  -PercentComplete ($o/$c * 100)
+    $c = $iprange.count
+    $o = 1
+
+    write-progress -Activity "Scanning the input range." -Status "Starting job for $ip"  -PercentComplete ($o/$c * 100)
     
     $I = $first_three+[string]$ip
 
-Start-Job -Name "Testing $I" -ArgumentList $I -ScriptBlock {
+    Start-Job -Name "Testing $I" -ArgumentList $I -ScriptBlock {
     Try {$name = [System.net.DNS]::GetHostByAddress($args[0])|select HostName -ErrorAction Continue}catch{write-host "Input null or non resolved"}
 
     #Try {icmp_response = test-netconnection -port $port_TCP -InformationLevel Quiet -ComputerName $I  -erroraction Continue}catch{write-verbose "blip blop"}
@@ -74,22 +95,27 @@ Start-Job -Name "Testing $I" -ArgumentList $I -ScriptBlock {
                             $memuse = Get-Counter -counter "\memory\% committed bytes in use"
                             $percmem = $memuse.CounterSamples.cookedvalue
                             write-host "Current mem usage is $percmem percent."
-
                            }
-$o++
+    $o++
 }
+
 #####need to wait for all jobs to finish cyclically then recieve them and add them to the report.
 
 $report = get-job |receive-job -Wait -AutoRemoveJob
 
 $date = get-date -format dd_MM_yy_HHmmss
-$report |Export-Clixml -path F:\DCO\xml_store\$first_three-$date.xml
 
-$report |convertto-html |out-file ~/$first_three.html
+$report |Export-Clixml -path $current_dir/$first_three-$date.xml
+
+$report |convertto-html |out-file $current_dir/$first_three.html
+
+}
+
 
 
 #########################################Range port scanner^^^^^build into above function^^^^^^#########################
 #####scan one ip for a range of ports
+function ps-endpoint(){
 $IP = "131.55.192.66"
 
 $Starting_Port = 1
@@ -108,8 +134,10 @@ Foreach( $port in $portrange){
 }
 
 
-
+}
 ####################################Network Detection######################################################################
+function ps-network(){
+
 
 #what other networks are there?
 $networks_report = @()
@@ -148,3 +176,4 @@ Foreach( $ip in $iprange){
 }
 
 $networks_report |convertto-html | out-file ~/networks131.55.html
+}
