@@ -15,9 +15,9 @@
 
 
 
-function ps-subnet( $first_three ){
+function start-subnetscan( $first_three ){
 
-$current_dir = pwd
+$current_dir = get-location
 $current_dir.path
 
 write-verbose "Welcome to power-scan the least creative name th3m3ch4nic could think of, but alas we can't choose our parents."
@@ -48,12 +48,12 @@ Foreach( $ip in $iprange){
     $c = $iprange.count
     $o = 1
 
-    write-progress -Activity "Scanning the input range." -Status "Starting job for $ip"  -PercentComplete ($o/$c * 100)
+    write-progress -Activity "Scanning the input range." -Status "Starting job for $ip"  -PercentComplete ($o/$c)
     
     $I = $first_three+[string]$ip
 
     Start-Job -Name "Testing $I" -ArgumentList $I -ScriptBlock {
-    Try {$name = [System.net.DNS]::GetHostByAddress($args[0])|select HostName -ErrorAction Continue}catch{write-host "Input null or non resolved"}
+    Try {$name = [System.net.DNS]::GetHostByAddress($args[0])|select-object HostName -ErrorAction Continue}catch{write-host "Input null or non resolved"}
 
     #Try {icmp_response = test-netconnection -port $port_TCP -InformationLevel Quiet -ComputerName $I  -erroraction Continue}catch{write-verbose "blip blop"}
     Try {$response = test-connection -quiet -Count 1 -ComputerName $args[0]  -erroraction Continue}catch{write-host "ICMP response failed to $args[0]"}
@@ -115,7 +115,7 @@ $report |convertto-html |out-file $current_dir/$first_three.html
 
 #########################################Range port scanner^^^^^build into above function^^^^^^#########################
 #####scan one ip for a range of ports
-function ps-endpoint(){
+function start-endpointscan(){
 $IP = "131.55.192.66"
 
 $Starting_Port = 1
@@ -136,7 +136,7 @@ Foreach( $port in $portrange){
 
 }
 ####################################Network Detection######################################################################
-function ps-network(){
+function start-networkscan(){
 
 
 #what other networks are there?
