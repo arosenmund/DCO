@@ -1,5 +1,5 @@
 ﻿#############Testing Route Validity#################
-###th3m3ch4nic
+###ironcat
 ##Website Testing / Remote Site Testing
 
 #####Global Vars
@@ -7,9 +7,8 @@ $dt = (get-date).DateTime
 $data_store = "C:\site_check\data_store\"
 $baseline_store = "C:\site_check\baselines\"
 $wait = 30
-$site = ""
+$site = "www.iamironcat.com"
 #comment out what you don't need
-
 
 ###Create Baselines
 
